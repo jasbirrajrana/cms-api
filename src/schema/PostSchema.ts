@@ -1,15 +1,14 @@
-import { getModelForClass, Prop } from "@typegoose/typegoose";
+import { getModelForClass, Prop, Ref } from "@typegoose/typegoose";
 import { Field, ObjectType } from "type-graphql";
 import { User } from "./UserSchema";
-import { ObjectId } from "mongodb";
 @ObjectType()
 export class Post {
   @Field()
   _id: string;
 
-  @Field()
-  @Prop({ type: () => String, ref: User })
-  user: string;
+  @Field((_type) => User)
+  @Prop({ ref: User, required: true })
+  author: string;
 
   @Field()
   @Prop({ type: () => String })

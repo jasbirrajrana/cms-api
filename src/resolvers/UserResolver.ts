@@ -133,7 +133,7 @@ export class UserResolver {
 
   @Query(() => [Post])
   async getPosts(@Arg("_id", () => String) _id: string) {
-    const posts = await PostModel.find({ user: _id });
+    const posts = await PostModel.find({ author: _id });
     return posts;
   }
 }

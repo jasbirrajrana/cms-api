@@ -1,10 +1,32 @@
 import { isAuth } from "../middleware/isAuth";
-import { Arg, Ctx, Mutation, ObjectType, UseMiddleware } from "type-graphql";
-import PostModel from "../schema/PostSchema";
+import {
+  Arg,
+  Ctx,
+  Field,
+  Mutation,
+  ObjectType,
+  Query,
+  UseMiddleware,
+} from "type-graphql";
+import PostModel, { Post } from "../schema/PostSchema";
 import { ctx } from "../Types/Mycontext";
 import slugify from "slugify";
+import UserModel, { User } from "../schema/UserSchema";
+
 @ObjectType()
 export class PostResolver {
+  @Query(() => Post)
+  async getPostByslug(@Arg("slug", () => String) slug: string): Promise<Post> {
+    const post = await PostModel.findOne({ slug }).populate(
+      "author",
+      "username _id, email"
+    );
+    console.log(post);
+    if (!post) {
+      throw new Error("Post Not found!");
+    }
+    return post;
+  }
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async createPost(
@@ -16,7 +38,7 @@ export class PostResolver {
     const post = await PostModel.create({
       title,
       body,
-      user: req.session.userId,
+      author: req.session.userId,
       slug,
     });
     if (!post) {

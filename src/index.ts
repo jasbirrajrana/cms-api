@@ -10,6 +10,7 @@ import session from "express-session";
 import connectRedis from "connect-redis";
 import { client } from "./utils/redisConfig";
 import { COOKIE_NAME, __prod__ } from "./Types/constants";
+import { PostResolver } from "./resolvers/PostResolver";
 
 (async () => {
   const app = express();
@@ -32,7 +33,9 @@ import { COOKIE_NAME, __prod__ } from "./Types/constants";
   );
   const port: any = process.env.PORT! || 5000;
   const apolloServer = new ApolloServer({
-    schema: await buildSchema({ resolvers: [HelloResolver, UserResolver] }),
+    schema: await buildSchema({
+      resolvers: [HelloResolver, UserResolver, PostResolver],
+    }),
     context: ({ req, res }) => ({ req, res }),
   });
   apolloServer.applyMiddleware({ app });

@@ -17,8 +17,8 @@ export class User {
   @Prop()
   password: string;
 
-  @Prop({ type: () => Boolean, default: false })
-  verified: boolean;
+  // @Prop({ type: () => Boolean, default: false })
+  // verified: boolean;
 
   @Field()
   @Prop({ default: Date.now() })

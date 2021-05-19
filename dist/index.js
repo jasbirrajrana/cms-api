@@ -47,6 +47,7 @@ const PostResolver_1 = require("./resolvers/PostResolver");
             resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver],
         }),
         context: ({ req, res }) => ({ req, res }),
+        playground: true,
     });
     apolloServer.applyMiddleware({ app });
     db_1.Connect().then(() => {

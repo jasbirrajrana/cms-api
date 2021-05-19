@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "watch-ts": "tsc -w",
-    "start": "node -r dotenv/config dist/index.js",
+    "start": "node dist/index.js",
     "watch-node": "nodemon -r dotenv/config dist/index.js",
     "commit": "cz"
   },

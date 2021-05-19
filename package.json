@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "watch-ts": "tsc -w",
+    "compile-node": "node -r dotenv/config dist/index.js",
     "watch-node": "nodemon -r dotenv/config dist/index.js",
     "commit": "cz"
   },
@@ -20,6 +21,7 @@
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "graphql": "^15.5.0",
+    "hot-shots": "^8.3.1",
     "ioredis": "^4.27.2",
     "mongoose": "^5.12.9",
     "nodemailer": "^6.6.0",

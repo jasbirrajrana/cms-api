@@ -2,7 +2,6 @@ import { isAuth } from "../middleware/isAuth";
 import {
   Arg,
   Ctx,
-  Field,
   Mutation,
   ObjectType,
   Query,
@@ -11,7 +10,6 @@ import {
 import PostModel, { Post } from "../schema/PostSchema";
 import { ctx } from "../Types/Mycontext";
 import slugify from "slugify";
-import UserModel, { User } from "../schema/UserSchema";
 
 @ObjectType()
 export class PostResolver {
@@ -26,6 +24,16 @@ export class PostResolver {
       throw new Error("Post Not found!");
     }
     return post;
+  }
+  @Query(() => [Post])
+  async getAllPosts() {
+    const posts = await PostModel.find({}).populate(
+      "author",
+      "username _id email"
+    );
+    console.log(posts);
+
+    return posts;
   }
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)

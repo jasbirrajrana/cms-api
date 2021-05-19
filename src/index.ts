@@ -12,8 +12,16 @@ import { client } from "./utils/redisConfig";
 import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
 
+// import { StatsD } from "hot-shots";
+// //==================================//
+// let dogstatsd = new StatsD();
+
+// dogstatsd.increment("page.views");
+
+// //=============================//
 (async () => {
   const app = express();
+
   const RedisStore = connectRedis(session);
   //express middlewares
   app.use(

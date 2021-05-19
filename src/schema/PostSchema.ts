@@ -1,4 +1,4 @@
-import { getModelForClass, Prop, Ref } from "@typegoose/typegoose";
+import { getModelForClass, Prop } from "@typegoose/typegoose";
 import { Field, ObjectType } from "type-graphql";
 import { User } from "./UserSchema";
 @ObjectType()

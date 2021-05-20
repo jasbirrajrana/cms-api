@@ -50,6 +50,7 @@ import { PostResolver } from "./resolvers/PostResolver";
     }),
     context: ({ req, res }) => ({ req, res }),
     playground: true,
+    introspection: true,
   });
   apolloServer.applyMiddleware({ app });
   Connect()

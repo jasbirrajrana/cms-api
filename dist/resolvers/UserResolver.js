@@ -135,6 +135,12 @@ let UserResolver = class UserResolver {
             return posts;
         });
     }
+    getMyPosts({ req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const posts = yield PostSchema_1.default.find({ author: req.session.userId });
+            return posts;
+        });
+    }
 };
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
@@ -176,6 +182,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "getPosts", null);
+__decorate([
+    type_graphql_1.Query(() => [PostSchema_1.Post]),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getMyPosts", null);
 UserResolver = __decorate([
     type_graphql_1.ObjectType()
 ], UserResolver);

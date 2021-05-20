@@ -19,8 +19,20 @@ export class Post {
   title: string;
 
   @Field()
+  @Prop({ type: () => String, default: "" })
+  subtitle: string;
+
+  @Field()
   @Prop({ type: () => String, required: true })
   body: string;
+
+  @Field()
+  @Prop({
+    type: () => String,
+    default:
+      "https://st.depositphotos.com/1428083/2946/i/600/depositphotos_29460297-stock-photo-bird-cage.jpg",
+  })
+  featureImage: string;
 
   @Field()
   @Prop({ default: Date.now() })

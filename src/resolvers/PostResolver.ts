@@ -40,6 +40,7 @@ export class PostResolver {
   async createPost(
     @Arg("title", () => String) title: string,
     @Arg("body", () => String) body: string,
+    @Arg("subtitle", { nullable: true }) subtitle: string,
     @Ctx() { req }: ctx
   ): Promise<boolean> {
     const slug = slugify(title);
@@ -48,6 +49,7 @@ export class PostResolver {
       body,
       author: req.session.userId,
       slug,
+      subtitle,
     });
     if (!post) {
       return false;
@@ -60,7 +62,8 @@ export class PostResolver {
   async updatePost(
     @Arg("slug", () => String) slug: string,
     @Arg("title", { nullable: true }) title: string,
-    @Arg("body", { nullable: true }) body: string
+    @Arg("body", { nullable: true }) body: string,
+    @Arg("subtitle", { nullable: true }) subtitle: string
   ) {
     const post = await PostModel.findOne({ slug }).populate(
       "author",
@@ -71,6 +74,7 @@ export class PostResolver {
     }
     if (post) {
       post.title = title || post.title;
+      post.subtitle = subtitle || post.subtitle;
       post.slug = title ? slugify(title) : post.slug;
       post.body = body || post.body;
     }

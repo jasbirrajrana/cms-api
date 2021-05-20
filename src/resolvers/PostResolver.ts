@@ -54,4 +54,28 @@ export class PostResolver {
     }
     return true;
   }
+
+  @Mutation(() => Post)
+  @UseMiddleware(isAuth)
+  async updatePost(
+    @Arg("slug", () => String) slug: string,
+    @Arg("title", { nullable: true }) title: string,
+    @Arg("body", { nullable: true }) body: string
+  ) {
+    const post = await PostModel.findOne({ slug }).populate(
+      "author",
+      "username _id, email"
+    );
+    if (!post) {
+      throw new Error("Post not found!");
+    }
+    if (post) {
+      post.title = title || post.title;
+      post.slug = title ? slugify(title) : post.slug;
+      post.body = body || post.body;
+    }
+    const updatedPost = await post.save();
+    console.log("updated!");
+    return updatedPost;
+  }
 }

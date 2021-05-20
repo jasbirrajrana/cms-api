@@ -28,6 +28,9 @@ const PostResolver_1 = require("./resolvers/PostResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
+    app.get("/", (req, res) => {
+        res.send("hello world!");
+    });
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: new RedisStore({ client: redisConfig_1.client, disableTouch: true }),
@@ -47,15 +50,18 @@ const PostResolver_1 = require("./resolvers/PostResolver");
             resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver],
         }),
         context: ({ req, res }) => ({ req, res }),
-        playground: true,
     });
     apolloServer.applyMiddleware({ app });
-    db_1.Connect().then(() => {
+    db_1.Connect()
+        .then(() => {
         app.listen(port, () => {
             console.log(chalk_1.default
                 .hex("#ddffbc")
                 .bold(`Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`));
         });
+    })
+        .catch((e) => {
+        console.log(e, "Error");
     });
 }))();
 //# sourceMappingURL=index.js.map

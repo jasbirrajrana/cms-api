@@ -81,6 +81,22 @@ let PostResolver = class PostResolver {
             return true;
         });
     }
+    updatePost(slug, title, body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const post = yield PostSchema_1.default.findOne({ slug }).populate("author", "username _id, email");
+            if (!post) {
+                throw new Error("Post not found!");
+            }
+            if (post) {
+                post.title = title || post.title;
+                post.slug = title ? slugify_1.default(title) : post.slug;
+                post.body = body || post.body;
+            }
+            const updatedPost = yield post.save();
+            console.log("updated!");
+            return updatedPost;
+        });
+    }
 };
 __decorate([
     type_graphql_1.Query(() => PostSchema_1.Post),
@@ -105,6 +121,16 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "createPost", null);
+__decorate([
+    type_graphql_1.Mutation(() => PostSchema_1.Post),
+    type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    __param(0, type_graphql_1.Arg("slug", () => String)),
+    __param(1, type_graphql_1.Arg("title", { nullable: true })),
+    __param(2, type_graphql_1.Arg("body", { nullable: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "updatePost", null);
 PostResolver = __decorate([
     type_graphql_1.ObjectType()
 ], PostResolver);

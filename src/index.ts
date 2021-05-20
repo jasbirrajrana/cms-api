@@ -23,6 +23,10 @@ import { PostResolver } from "./resolvers/PostResolver";
   const app = express();
 
   const RedisStore = connectRedis(session);
+
+  app.get("/", (req, res) => {
+    res.send("hello world!");
+  });
   //express middlewares
   app.use(
     session({
@@ -45,18 +49,21 @@ import { PostResolver } from "./resolvers/PostResolver";
       resolvers: [HelloResolver, UserResolver, PostResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
-    playground: true,
   });
   apolloServer.applyMiddleware({ app });
-  Connect().then(() => {
-    app.listen(port, () => {
-      console.log(
-        chalk
-          .hex("#ddffbc")
-          .bold(
-            `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`
-          )
-      );
+  Connect()
+    .then(() => {
+      app.listen(port, () => {
+        console.log(
+          chalk
+            .hex("#ddffbc")
+            .bold(
+              `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`
+            )
+        );
+      });
+    })
+    .catch((e) => {
+      console.log(e, "Error");
     });
-  });
 })();

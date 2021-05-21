@@ -5,6 +5,7 @@ import express from "express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/HelloResolver";
 import chalk from "chalk";
+import cors from "cors";
 import { UserResolver } from "./resolvers/UserResolver";
 import session from "express-session";
 import connectRedis from "connect-redis";
@@ -24,18 +25,21 @@ import { PostResolver } from "./resolvers/PostResolver";
 
   const RedisStore = connectRedis(session);
 
-  app.get("/", (req, res) => {
+  app.get("/", (_, res) => {
     res.send("hello world!");
   });
+
   //express middlewares
+
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
   app.use(
     session({
       name: COOKIE_NAME,
       store: new RedisStore({ client: client, disableTouch: true }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 365 * 10, // 10 years
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
-        sameSite: "lax", // csrf
+        sameSite: "lax",
         secure: __prod__,
       },
       secret: process.env.SESSION_SECRET!,
@@ -52,7 +56,9 @@ import { PostResolver } from "./resolvers/PostResolver";
     playground: true,
     introspection: true,
   });
-  apolloServer.applyMiddleware({ app });
+
+  apolloServer.applyMiddleware({ app, cors: false });
+
   Connect()
     .then(() => {
       app.listen(port, () => {

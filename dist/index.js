@@ -19,6 +19,7 @@ const express_1 = __importDefault(require("express"));
 const type_graphql_1 = require("type-graphql");
 const HelloResolver_1 = require("./resolvers/HelloResolver");
 const chalk_1 = __importDefault(require("chalk"));
+const cors_1 = __importDefault(require("cors"));
 const UserResolver_1 = require("./resolvers/UserResolver");
 const express_session_1 = __importDefault(require("express-session"));
 const connect_redis_1 = __importDefault(require("connect-redis"));
@@ -28,9 +29,10 @@ const PostResolver_1 = require("./resolvers/PostResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
-    app.get("/", (req, res) => {
+    app.get("/", (_, res) => {
         res.send("hello world!");
     });
+    app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: new RedisStore({ client: redisConfig_1.client, disableTouch: true }),
@@ -50,8 +52,10 @@ const PostResolver_1 = require("./resolvers/PostResolver");
             resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver],
         }),
         context: ({ req, res }) => ({ req, res }),
+        playground: true,
+        introspection: true,
     });
-    apolloServer.applyMiddleware({ app });
+    apolloServer.applyMiddleware({ app, cors: false });
     db_1.Connect()
         .then(() => {
         app.listen(port, () => {

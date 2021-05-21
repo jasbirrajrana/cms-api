@@ -25,10 +25,6 @@ import { PostResolver } from "./resolvers/PostResolver";
 
   const RedisStore = connectRedis(session);
 
-  app.get("/", (_, res) => {
-    res.send("hello world!");
-  });
-
   //express middlewares
 
   app.use(cors({ origin: "http://localhost:3000", credentials: true }));
@@ -56,8 +52,8 @@ import { PostResolver } from "./resolvers/PostResolver";
     playground: true,
     introspection: true,
   });
-
-  apolloServer.applyMiddleware({ app, cors: false });
+  const path = "/";
+  apolloServer.applyMiddleware({ app, cors: false, path });
 
   Connect()
     .then(() => {
@@ -66,7 +62,7 @@ import { PostResolver } from "./resolvers/PostResolver";
           chalk
             .hex("#ddffbc")
             .bold(
-              `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`
+              `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}`
             )
         );
       });

@@ -8,4 +8,6 @@ export class UserResponse {
   errors?: FieldError[];
   @Field(() => User, { nullable: true })
   user?: User;
+  @Field(() => Boolean, { nullable: true })
+  goingForVerification?: boolean;
 }

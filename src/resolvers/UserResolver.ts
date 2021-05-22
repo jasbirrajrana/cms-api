@@ -3,28 +3,14 @@ import { Arg, Ctx, Mutation, ObjectType, Query } from "type-graphql";
 import * as argon2 from "argon2";
 import { UserResponse } from "../Types/UserResponse";
 import { ctx } from "../Types/Mycontext";
-// import { v4 } from "uuid";
 import { COOKIE_NAME } from "../Types/constants";
 import PostModel, { Post } from "../schema/PostSchema";
-// import { sendEmail } from "../utils/sendMail";
-// import { client } from "../utils/redisConfig";
-// import redis from "redis";
+import { sendMailForOtp } from "../config/sendMail";
+import OtpModel, { Otp } from "../schema/OtpSchema";
+import { confirmOtp } from "../utils/confirmOtp";
 
 @ObjectType()
 export class UserResolver {
-  // @Mutation(() => Boolean)
-  // async confirmUser(
-  //   @Arg("token", () => String) token: string
-  // ): Promise<boolean> {
-  //   const userId = client.get(token);
-  //   if (!userId) {
-  //     return false;
-  //   }
-  //   console.log(userId);
-  //   UserModel.updateOne({ _id: userId as any }, { verified: true });
-
-  //   return true;
-  // }
   @Mutation(() => Boolean)
   logout(@Ctx() { req, res }: ctx) {
     return new Promise((resolve) =>
@@ -77,6 +63,17 @@ export class UserResolver {
         ],
       };
     }
+
+    if (!userExist.isVerfied) {
+      return {
+        errors: [
+          {
+            field: "Verification",
+            message: "You are'nt verfied user!",
+          },
+        ],
+      };
+    }
     // store user id session
 
     // this will set a cookie on the user
@@ -91,44 +88,26 @@ export class UserResolver {
   }
   @Mutation(() => UserResponse)
   async register(
-    @Arg("username", () => String) username: string,
-    @Arg("email", () => String) email: string,
-    @Arg("password", () => String) password: string,
+    @Arg("otp", () => Number) otp: number,
     @Ctx() { req }: ctx
   ): Promise<UserResponse> {
-    const userExist = await UserModel.findOne({ email });
-    if (userExist) {
-      return {
-        errors: [
-          {
-            field: "email",
-            message: "Email is Already in Use!",
-          },
-        ],
-      };
-    }
-    if (password.length <= 4) {
-      return {
-        errors: [
-          {
-            field: "password",
-            message: "password length must be greater than 4",
-          },
-        ],
-      };
-    }
-    const hashedPassword = await argon2.hash(password);
+    let { username, password, email }: any = await OtpModel.findOne({ otp });
+
+    let otp_obj = await confirmOtp(email, otp);
     const user = await UserModel.create({
       username,
+      password,
       email,
-      password: hashedPassword,
+      isVerfied: true,
     });
+    if (user) {
+      try {
+        await OtpModel.deleteOne({ _id: otp_obj._id });
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
     req.session.userId = user._id;
-
-    // const token = v4();
-    // await client.set(token, user._id, redis.print);
-    // const url = `http://localhost:3000/user/confirm/${token}`;
-    // await sendEmail(user.email, url);
     return { user };
   }
 

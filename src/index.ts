@@ -12,6 +12,7 @@ import connectRedis from "connect-redis";
 import { client } from "./utils/redisConfig";
 import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
+import { OtpResolver } from "./resolvers/OtpResolver";
 
 // import { StatsD } from "hot-shots";
 // //==================================//
@@ -46,14 +47,14 @@ import { PostResolver } from "./resolvers/PostResolver";
   const port: any = process.env.PORT! || 5000;
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, PostResolver],
+      resolvers: [HelloResolver, UserResolver, PostResolver, OtpResolver],
     }),
     context: ({ req, res }) => ({ req, res }),
     playground: true,
     introspection: true,
   });
-  const path = "/";
-  apolloServer.applyMiddleware({ app, cors: false, path });
+  // const path = "/";
+  apolloServer.applyMiddleware({ app, cors: false });
 
   Connect()
     .then(() => {
@@ -62,7 +63,7 @@ import { PostResolver } from "./resolvers/PostResolver";
           chalk
             .hex("#ddffbc")
             .bold(
-              `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}`
+              `Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`
             )
         );
       });

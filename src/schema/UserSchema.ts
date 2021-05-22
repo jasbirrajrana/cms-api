@@ -14,11 +14,12 @@ export class User {
   @Prop({ type: () => String, required: true })
   email: string;
 
+  @Field()
+  @Prop({ type: () => Boolean, default: false })
+  isVerfied: boolean;
+
   @Prop()
   password: string;
-
-  // @Prop({ type: () => Boolean, default: false })
-  // verified: boolean;
 
   @Field()
   @Prop({ default: Date.now() })

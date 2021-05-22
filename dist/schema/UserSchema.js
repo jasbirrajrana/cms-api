@@ -29,6 +29,11 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "email", void 0);
 __decorate([
+    type_graphql_1.Field(),
+    typegoose_1.Prop({ type: () => Boolean, default: false }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isVerfied", void 0);
+__decorate([
     typegoose_1.Prop(),
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);

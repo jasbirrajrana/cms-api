@@ -39,6 +39,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
 const UserSchema_1 = __importStar(require("../schema/UserSchema"));
@@ -47,6 +50,8 @@ const argon2 = __importStar(require("argon2"));
 const UserResponse_1 = require("../Types/UserResponse");
 const constants_1 = require("../Types/constants");
 const PostSchema_1 = __importStar(require("../schema/PostSchema"));
+const OtpSchema_1 = __importDefault(require("../schema/OtpSchema"));
+const confirmOtp_1 = require("../utils/confirmOtp");
 let UserResolver = class UserResolver {
     logout({ req, res }) {
         return new Promise((resolve) => req.session.destroy((err) => {
@@ -90,41 +95,40 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
+            if (!userExist.isVerfied) {
+                return {
+                    errors: [
+                        {
+                            field: "Verification",
+                            message: "You are'nt verfied user!",
+                        },
+                    ],
+                };
+            }
             req.session.userId = userExist._id;
             return {
                 user: userExist,
             };
         });
     }
-    register(username, email, password, { req }) {
+    register(otp, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const userExist = yield UserSchema_1.default.findOne({ email });
-            if (userExist) {
-                return {
-                    errors: [
-                        {
-                            field: "email",
-                            message: "Email is Already in Use!",
-                        },
-                    ],
-                };
-            }
-            if (password.length <= 4) {
-                return {
-                    errors: [
-                        {
-                            field: "password",
-                            message: "password length must be greater than 4",
-                        },
-                    ],
-                };
-            }
-            const hashedPassword = yield argon2.hash(password);
+            let { username, password, email } = yield OtpSchema_1.default.findOne({ otp });
+            let otp_obj = yield confirmOtp_1.confirmOtp(email, otp);
             const user = yield UserSchema_1.default.create({
                 username,
+                password,
                 email,
-                password: hashedPassword,
+                isVerfied: true,
             });
+            if (user) {
+                try {
+                    yield OtpSchema_1.default.deleteOne({ _id: otp_obj._id });
+                }
+                catch (error) {
+                    throw new Error(error);
+                }
+            }
             req.session.userId = user._id;
             return { user };
         });
@@ -167,12 +171,10 @@ __decorate([
 ], UserResolver.prototype, "login", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse_1.UserResponse),
-    __param(0, type_graphql_1.Arg("username", () => String)),
-    __param(1, type_graphql_1.Arg("email", () => String)),
-    __param(2, type_graphql_1.Arg("password", () => String)),
-    __param(3, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg("otp", () => Number)),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Object]),
+    __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([

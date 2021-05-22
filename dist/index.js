@@ -26,6 +26,7 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const redisConfig_1 = require("./utils/redisConfig");
 const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
+const OtpResolver_1 = require("./resolvers/OtpResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
@@ -46,20 +47,19 @@ const PostResolver_1 = require("./resolvers/PostResolver");
     const port = process.env.PORT || 5000;
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver],
+            resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver, OtpResolver_1.OtpResolver],
         }),
         context: ({ req, res }) => ({ req, res }),
         playground: true,
         introspection: true,
     });
-    const path = "/";
-    apolloServer.applyMiddleware({ app, cors: false, path });
+    apolloServer.applyMiddleware({ app, cors: false });
     db_1.Connect()
         .then(() => {
         app.listen(port, () => {
             console.log(chalk_1.default
                 .hex("#ddffbc")
-                .bold(`Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}`));
+                .bold(`Server is in ${process.env.NODE_ENV} mode on http://localhost:${port}/graphql`));
         });
     })
         .catch((e) => {

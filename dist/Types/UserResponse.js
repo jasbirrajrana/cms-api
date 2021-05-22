@@ -23,6 +23,10 @@ __decorate([
     type_graphql_1.Field(() => UserSchema_1.User, { nullable: true }),
     __metadata("design:type", UserSchema_1.User)
 ], UserResponse.prototype, "user", void 0);
+__decorate([
+    type_graphql_1.Field(() => Boolean, { nullable: true }),
+    __metadata("design:type", Boolean)
+], UserResponse.prototype, "goingForVerification", void 0);
 UserResponse = __decorate([
     type_graphql_1.ObjectType()
 ], UserResponse);

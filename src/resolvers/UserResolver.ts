@@ -5,10 +5,8 @@ import { UserResponse } from "../Types/UserResponse";
 import { ctx } from "../Types/Mycontext";
 import { COOKIE_NAME } from "../Types/constants";
 import PostModel, { Post } from "../schema/PostSchema";
-import { sendMailForOtp } from "../config/sendMail";
-import OtpModel, { Otp } from "../schema/OtpSchema";
-import { confirmOtp } from "../utils/confirmOtp";
-
+import { sendMailForConfirmation } from "../config/sendMail";
+import { createConfirmationUrl } from "../utils/createConfirmationUrl";
 @ObjectType()
 export class UserResolver {
   @Mutation(() => Boolean)
@@ -88,26 +86,51 @@ export class UserResolver {
   }
   @Mutation(() => UserResponse)
   async register(
-    @Arg("otp", () => Number) otp: number,
-    @Ctx() { req }: ctx
+    @Arg("username", () => String) username: string,
+    @Arg("email", () => String) email: string,
+    @Arg("password", () => String) password: string
   ): Promise<UserResponse> {
-    let { username, password, email }: any = await OtpModel.findOne({ otp });
+    let isUserExist = await UserModel.findOne({ email });
 
-    let otp_obj = await confirmOtp(email, otp);
-    const user = await UserModel.create({
-      username,
-      password,
-      email,
-      isVerfied: true,
-    });
-    if (user) {
-      try {
-        await OtpModel.deleteOne({ _id: otp_obj._id });
-      } catch (error) {
-        throw new Error(error);
-      }
+    if (isUserExist) {
+      return {
+        errors: [
+          {
+            field: "Email",
+            message: "Email Already Registered!",
+          },
+        ],
+      };
     }
-    req.session.userId = user._id;
+
+    if (password.length <= 4) {
+      return {
+        errors: [
+          {
+            field: "password",
+            message: "password length must be greater than 4",
+          },
+        ],
+      };
+    }
+
+    const hashedPassword: string = await argon2.hash(password);
+    let user;
+    try {
+      user = await UserModel.create({
+        username,
+        email,
+        password: hashedPassword,
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
+
+    await sendMailForConfirmation(
+      email,
+      await createConfirmationUrl(user.email)
+    );
+
     return { user };
   }
 

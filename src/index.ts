@@ -12,7 +12,7 @@ import connectRedis from "connect-redis";
 import { client } from "./utils/redisConfig";
 import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
-import { OtpResolver } from "./resolvers/OtpResolver";
+import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 
 // import { StatsD } from "hot-shots";
 // //==================================//
@@ -24,6 +24,12 @@ import { OtpResolver } from "./resolvers/OtpResolver";
 (async () => {
   const app = express();
 
+  client.on("error", (error) => {
+    console.log("client error", error);
+  });
+  client.on("subscribe", () => {
+    console.log("client subscribe");
+  });
   const RedisStore = connectRedis(session);
 
   //express middlewares
@@ -47,7 +53,12 @@ import { OtpResolver } from "./resolvers/OtpResolver";
   const port: any = process.env.PORT! || 5000;
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, PostResolver, OtpResolver],
+      resolvers: [
+        HelloResolver,
+        UserResolver,
+        PostResolver,
+        ConfirmUserResolver,
+      ],
     }),
     context: ({ req, res }) => ({ req, res }),
     playground: true,

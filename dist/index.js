@@ -26,9 +26,15 @@ const connect_redis_1 = __importDefault(require("connect-redis"));
 const redisConfig_1 = require("./utils/redisConfig");
 const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
-const OtpResolver_1 = require("./resolvers/OtpResolver");
+const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
+    redisConfig_1.client.on("error", (error) => {
+        console.log("client error", error);
+    });
+    redisConfig_1.client.on("subscribe", () => {
+        console.log("client subscribe");
+    });
     const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
     app.use(express_session_1.default({
@@ -47,7 +53,12 @@ const OtpResolver_1 = require("./resolvers/OtpResolver");
     const port = process.env.PORT || 5000;
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
-            resolvers: [HelloResolver_1.HelloResolver, UserResolver_1.UserResolver, PostResolver_1.PostResolver, OtpResolver_1.OtpResolver],
+            resolvers: [
+                HelloResolver_1.HelloResolver,
+                UserResolver_1.UserResolver,
+                PostResolver_1.PostResolver,
+                confirmUserResolver_1.ConfirmUserResolver,
+            ],
         }),
         context: ({ req, res }) => ({ req, res }),
         playground: true,

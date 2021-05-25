@@ -39,9 +39,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserResolver = void 0;
 const UserSchema_1 = __importStar(require("../schema/UserSchema"));
@@ -50,8 +47,8 @@ const argon2 = __importStar(require("argon2"));
 const UserResponse_1 = require("../Types/UserResponse");
 const constants_1 = require("../Types/constants");
 const PostSchema_1 = __importStar(require("../schema/PostSchema"));
-const OtpSchema_1 = __importDefault(require("../schema/OtpSchema"));
-const confirmOtp_1 = require("../utils/confirmOtp");
+const sendMail_1 = require("../config/sendMail");
+const createConfirmationUrl_1 = require("../utils/createConfirmationUrl");
 let UserResolver = class UserResolver {
     logout({ req, res }) {
         return new Promise((resolve) => req.session.destroy((err) => {
@@ -111,25 +108,42 @@ let UserResolver = class UserResolver {
             };
         });
     }
-    register(otp, { req }) {
+    register(username, email, password) {
         return __awaiter(this, void 0, void 0, function* () {
-            let { username, password, email } = yield OtpSchema_1.default.findOne({ otp });
-            let otp_obj = yield confirmOtp_1.confirmOtp(email, otp);
-            const user = yield UserSchema_1.default.create({
-                username,
-                password,
-                email,
-                isVerfied: true,
-            });
-            if (user) {
-                try {
-                    yield OtpSchema_1.default.deleteOne({ _id: otp_obj._id });
-                }
-                catch (error) {
-                    throw new Error(error);
-                }
+            let isUserExist = yield UserSchema_1.default.findOne({ email });
+            if (isUserExist) {
+                return {
+                    errors: [
+                        {
+                            field: "Email",
+                            message: "Email Already Registered!",
+                        },
+                    ],
+                };
             }
-            req.session.userId = user._id;
+            if (password.length <= 4) {
+                return {
+                    errors: [
+                        {
+                            field: "password",
+                            message: "password length must be greater than 4",
+                        },
+                    ],
+                };
+            }
+            const hashedPassword = yield argon2.hash(password);
+            let user;
+            try {
+                user = yield UserSchema_1.default.create({
+                    username,
+                    email,
+                    password: hashedPassword,
+                });
+            }
+            catch (error) {
+                throw new Error(error);
+            }
+            yield sendMail_1.sendMailForConfirmation(email, yield createConfirmationUrl_1.createConfirmationUrl(user.email));
             return { user };
         });
     }
@@ -171,10 +185,11 @@ __decorate([
 ], UserResolver.prototype, "login", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse_1.UserResponse),
-    __param(0, type_graphql_1.Arg("otp", () => Number)),
-    __param(1, type_graphql_1.Ctx()),
+    __param(0, type_graphql_1.Arg("username", () => String)),
+    __param(1, type_graphql_1.Arg("email", () => String)),
+    __param(2, type_graphql_1.Arg("password", () => String)),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([

@@ -3,7 +3,7 @@ import { Field, ObjectType } from "type-graphql";
 @ObjectType()
 export class FieldError {
   @Field()
-  field: string;
+  field?: string;
   @Field()
   message: string;
 }

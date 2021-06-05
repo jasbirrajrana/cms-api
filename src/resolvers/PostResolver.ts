@@ -41,6 +41,9 @@ export class PostResolver {
     @Arg("title", () => String) title: string,
     @Arg("body", () => String) body: string,
     @Arg("subtitle", { nullable: true }) subtitle: string,
+    @Arg("description", { nullable: true }) description: string,
+    @Arg("tag",()=>String) tag:string,
+
     @Ctx() { req }: ctx
   ): Promise<boolean> {
     const slug = slugify(title);
@@ -50,7 +53,10 @@ export class PostResolver {
       author: req.session.userId,
       slug,
       subtitle,
+      description,
+     tag
     });
+    await post.save()
     if (!post) {
       return false;
     }
@@ -63,7 +69,8 @@ export class PostResolver {
     @Arg("slug", () => String) slug: string,
     @Arg("title", { nullable: true }) title: string,
     @Arg("body", { nullable: true }) body: string,
-    @Arg("subtitle", { nullable: true }) subtitle: string
+    @Arg("subtitle", { nullable: true }) subtitle: string,
+    @Arg("description", { nullable: true }) description: string
   ) {
     const post = await PostModel.findOne({ slug }).populate(
       "author",
@@ -77,6 +84,7 @@ export class PostResolver {
       post.subtitle = subtitle || post.subtitle;
       post.slug = title ? slugify(title) : post.slug;
       post.body = body || post.body;
+      post.description = description || post.description;
     }
     const updatedPost = await post.save();
     console.log("updated!");

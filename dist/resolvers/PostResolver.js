@@ -66,7 +66,7 @@ let PostResolver = class PostResolver {
             return posts;
         });
     }
-    createPost(title, body, subtitle, { req }) {
+    createPost(title, body, subtitle, description, tag, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const slug = slugify_1.default(title);
             const post = yield PostSchema_1.default.create({
@@ -75,14 +75,17 @@ let PostResolver = class PostResolver {
                 author: req.session.userId,
                 slug,
                 subtitle,
+                description,
+                tag
             });
+            yield post.save();
             if (!post) {
                 return false;
             }
             return true;
         });
     }
-    updatePost(slug, title, body, subtitle) {
+    updatePost(slug, title, body, subtitle, description) {
         return __awaiter(this, void 0, void 0, function* () {
             const post = yield PostSchema_1.default.findOne({ slug }).populate("author", "username _id, email");
             if (!post) {
@@ -93,6 +96,7 @@ let PostResolver = class PostResolver {
                 post.subtitle = subtitle || post.subtitle;
                 post.slug = title ? slugify_1.default(title) : post.slug;
                 post.body = body || post.body;
+                post.description = description || post.description;
             }
             const updatedPost = yield post.save();
             console.log("updated!");
@@ -119,9 +123,11 @@ __decorate([
     __param(0, type_graphql_1.Arg("title", () => String)),
     __param(1, type_graphql_1.Arg("body", () => String)),
     __param(2, type_graphql_1.Arg("subtitle", { nullable: true })),
-    __param(3, type_graphql_1.Ctx()),
+    __param(3, type_graphql_1.Arg("description", { nullable: true })),
+    __param(4, type_graphql_1.Arg("tag", () => String)),
+    __param(5, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Object]),
+    __metadata("design:paramtypes", [String, String, String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "createPost", null);
 __decorate([
@@ -131,8 +137,9 @@ __decorate([
     __param(1, type_graphql_1.Arg("title", { nullable: true })),
     __param(2, type_graphql_1.Arg("body", { nullable: true })),
     __param(3, type_graphql_1.Arg("subtitle", { nullable: true })),
+    __param(4, type_graphql_1.Arg("description", { nullable: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, String]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "updatePost", null);
 PostResolver = __decorate([

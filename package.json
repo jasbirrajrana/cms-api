@@ -6,7 +6,8 @@
   "scripts": {
     "watch-ts": "tsc -w",
     "watch-node": "nodemon -r dotenv/config dist/index.js",
-    "commit": "cz"
+    "commit": "cz",
+    "import:data": "node dist/seeder.js"
   },
   "dependencies": {
     "@sendgrid/mail": "^7.4.4",

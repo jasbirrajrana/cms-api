@@ -27,6 +27,14 @@ export class Post {
   body: string;
 
   @Field()
+  @Prop({ type: () => String, required: true })
+  description: string;
+
+  @Field()
+  @Prop({ type: () => String, required: true })
+  tag:string
+
+  @Field()
   @Prop({
     type: () => String,
     default:

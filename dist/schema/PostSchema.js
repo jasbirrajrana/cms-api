@@ -46,6 +46,16 @@ __decorate([
 ], Post.prototype, "body", void 0);
 __decorate([
     type_graphql_1.Field(),
+    typegoose_1.Prop({ type: () => String, required: true }),
+    __metadata("design:type", String)
+], Post.prototype, "description", void 0);
+__decorate([
+    type_graphql_1.Field(),
+    typegoose_1.Prop({ type: () => String, required: true }),
+    __metadata("design:type", String)
+], Post.prototype, "tag", void 0);
+__decorate([
+    type_graphql_1.Field(),
     typegoose_1.Prop({
         type: () => String,
         default: "https://st.depositphotos.com/1428083/2946/i/600/depositphotos_29460297-stock-photo-bird-cage.jpg",

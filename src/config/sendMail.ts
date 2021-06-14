@@ -15,3 +15,5 @@ export const sendMailForConfirmation = async (email: string, url: string) => {
       console.log("send!!");
     });
 };
+let config:any="j";
+console.log(config)

@@ -7,8 +7,12 @@ exports.client = void 0;
 const redis_1 = __importDefault(require("redis"));
 const bluebird_1 = __importDefault(require("bluebird"));
 bluebird_1.default.promisifyAll(redis_1.default);
+console.log(process.env.REDIS_CACHE_HOST_NAME);
 exports.client = redis_1.default.createClient(6380, process.env.REDIS_CACHE_HOST_NAME, {
     auth_pass: process.env.REDIS_CACHE_KEY,
     tls: process.env.REDIS_CACHE_HOST_NAME,
+});
+exports.client.on("error", () => {
+    console.log("error");
 });
 //# sourceMappingURL=redisConfig.js.map

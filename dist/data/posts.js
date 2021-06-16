@@ -25,44 +25,14 @@ const content = fs.readFileSync(`${__dirname}/post.md`, "utf-8");
 console.log(content);
 const posts = [
     {
-        slug: "github-dark-mode",
-        title: "Github Dark Mode",
-        subtitle: "Step by step guide to becoming a modern front-end web developer.",
-        featureImage: "https://images.unsplash.com/photo-1621880512780-d47a90bd58f4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-        description: "GitHub just announced Dark Mode at GitHub Universe 2020 conference. I'm super duper excited. Check out my reaction video and a couple of other excellent features Nat Friedman (GitHub's CEO) announced in the keynote.",
+        slug: "Merge-Sort-Algorithm",
+        title: "Merge Sort Algorithm",
+        subtitle: "Implementation of merge sort using JavaScript",
+        featureImage: "https://s3.us-west-2.amazonaws.com/secure.notion-static.com/72bb37e7-46c2-4407-9e49-c651e61f3327/merge-sort-eg.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAT73L2G45O3KS52Y5%2F20210616%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20210616T150404Z&X-Amz-Expires=86400&X-Amz-Signature=288208eb880bfe1bf5c5de2d41cebd2e8238bbb27984653a217e50c740b99cf7&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22merge-sort-eg.jpg%22",
+        description: "Merge sort is one of the most efficient sorting algorithms. It works on the principle of Divide and Conquer. Merge sort repeatedly breaks down a list into several sublists until each sublist consists of a single element and merging those sublists in a manner that results in a sorted list",
         body: content,
         likes: 10,
-        tag: "git"
-    },
-    {
-        slug: "screencasting-tip-auto-hide-cursor-on-macOS",
-        title: "Screencasting Tip: Auto Hide Cursor on macOS",
-        subtitle: "Step by step guide to becoming a modern front-end web developer.",
-        featureImage: "https://images.unsplash.com/photo-1621880512780-d47a90bd58f4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-        description: "GitHub just announced Dark Mode at GitHub Universe 2020 conference. I'm super duper excited. Check out my reaction video and a couple of other excellent features Nat Friedman (GitHub's CEO) announced in the keynote.",
-        body: content,
-        likes: 2,
-        tag: "mac"
-    },
-    {
-        slug: "i-made-a-silly-mistake-launching-nodeCLI.com",
-        title: "I Made A Silly Mistake Launching NodeCLI.com",
-        subtitle: "Step by step guide to becoming a modern front-end web developer.",
-        featureImage: "https://images.unsplash.com/photo-1621880512780-d47a90bd58f4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-        description: "GitHub just announced Dark Mode at GitHub Universe 2020 conference. I'm super duper excited. Check out my reaction video and a couple of other excellent features Nat Friedman (GitHub's CEO) announced in the keynote.",
-        body: content,
-        likes: 23,
-        tag: "software"
-    },
-    {
-        slug: "web-purist",
-        title: "Web Purist",
-        subtitle: "Step by step guide to becoming a modern front-end web developer.",
-        featureImage: "https://images.unsplash.com/photo-1621880512780-d47a90bd58f4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80",
-        description: "GitHub just announced Dark Mode at GitHub Universe 2020 conference. I'm super duper excited. Check out my reaction video and a couple of other excellent features Nat Friedman (GitHub's CEO) announced in the keynote.",
-        body: content,
-        likes: 23,
-        tag: "web"
+        tag: "Algorithm",
     },
 ];
 exports.default = posts;

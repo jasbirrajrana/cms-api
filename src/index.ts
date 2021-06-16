@@ -18,14 +18,14 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
   if (__prod__) {
     app.set("trust proxy", 1);
   }
-
-  app.use(
-    cors({
-      origin: "https://cms-frontend-lr4cxyxdf-jasbirrajrana.vercel.app/",
-      credentials: true,
-    })
-  );
-  // app.use(cors());
+  const corsOption = {
+    credentials: true,
+    origin:
+      process.env.NODE_ENV === "development"
+        ? "*"
+        : (process.env.FRONTEND_HOST as string),
+  };
+  app.use(cors(corsOption));
   app.use(
     session({
       name: COOKIE_NAME,

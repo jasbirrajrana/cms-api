@@ -28,7 +28,10 @@ const PostResolver_1 = require("./resolvers/PostResolver");
 const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
-    app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
+    if (constants_1.__prod__) {
+        app.set("trust proxy", 1);
+    }
+    app.use(cors_1.default());
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: connect_mongo_1.default.create({ mongoUrl: process.env.MONGO_URI }),

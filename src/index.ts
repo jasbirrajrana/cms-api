@@ -15,8 +15,12 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 
 (async () => {
   const app = express();
+  if (__prod__) {
+    app.set("trust proxy", 1);
+  }
 
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  // app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  app.use(cors());
   app.use(
     session({
       name: COOKIE_NAME,

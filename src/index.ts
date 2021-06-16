@@ -19,8 +19,10 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
     app.set("trust proxy", 1);
   }
 
-  // app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-  app.use(cors());
+  app.use(
+    cors({ origin: "https://cms-frontend-psi.vercel.app/", credentials: true })
+  );
+  // app.use(cors());
   app.use(
     session({
       name: COOKIE_NAME,

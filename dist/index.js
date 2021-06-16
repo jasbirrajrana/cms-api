@@ -31,7 +31,10 @@ const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
     if (constants_1.__prod__) {
         app.set("trust proxy", 1);
     }
-    app.use(cors_1.default({ origin: "https://cms-frontend-psi.vercel.app/", credentials: true }));
+    app.use(cors_1.default({
+        origin: "https://cms-frontend-lr4cxyxdf-jasbirrajrana.vercel.app/",
+        credentials: true,
+    }));
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: connect_mongo_1.default.create({ mongoUrl: process.env.MONGO_URI }),

@@ -20,7 +20,10 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
   }
 
   app.use(
-    cors({ origin: "https://cms-frontend-psi.vercel.app/", credentials: true })
+    cors({
+      origin: "https://cms-frontend-lr4cxyxdf-jasbirrajrana.vercel.app/",
+      credentials: true,
+    })
   );
   // app.use(cors());
   app.use(

@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const apollo_server_express_1 = require("apollo-server-express");
 const db_1 = require("./config/db");
-const connect_mongo_1 = __importDefault(require("connect-mongo"));
 const express_1 = __importDefault(require("express"));
 const type_graphql_1 = require("type-graphql");
+const connect_redis_1 = __importDefault(require("connect-redis"));
 const HelloResolver_1 = require("./resolvers/HelloResolver");
 const chalk_1 = __importDefault(require("chalk"));
 const cors_1 = __importDefault(require("cors"));
@@ -26,21 +26,20 @@ const express_session_1 = __importDefault(require("express-session"));
 const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
 const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
+const redisConfig_1 = require("./utils/redisConfig");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     if (constants_1.__prod__) {
         app.set("trust proxy", 1);
     }
-    const corsOption = {
-        credentials: true,
-        origin: process.env.NODE_ENV === "development"
-            ? "*"
-            : process.env.FRONTEND_HOST,
-    };
-    app.use(cors_1.default(corsOption));
+    app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
+    const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
-        store: connect_mongo_1.default.create({ mongoUrl: process.env.MONGO_URI }),
+        store: new RedisStore({
+            client: redisConfig_1.client,
+            disableTouch: true,
+        }),
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,

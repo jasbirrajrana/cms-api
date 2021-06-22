@@ -1,9 +1,10 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
 import { Connect } from "./config/db";
-import MongoStore from "connect-mongo";
+// import MongoStore from "connect-mongo";
 import express from "express";
 import { buildSchema } from "type-graphql";
+import connectRedis from "connect-redis";
 import { HelloResolver } from "./resolvers/HelloResolver";
 import chalk from "chalk";
 import cors from "cors";
@@ -12,24 +13,21 @@ import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
-
+import { client } from "./utils/redisConfig";
 (async () => {
   const app = express();
   if (__prod__) {
     app.set("trust proxy", 1);
   }
-  const corsOption = {
-    credentials: true,
-    origin:
-      process.env.NODE_ENV === "development"
-        ? "*"
-        : (process.env.FRONTEND_HOST as string),
-  };
-  app.use(cors(corsOption));
+  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  const RedisStore = connectRedis(session);
   app.use(
     session({
       name: COOKIE_NAME,
-      store: MongoStore.create({ mongoUrl: process.env.MONGO_URI! }),
+      store: new RedisStore({
+        client: client,
+        disableTouch: true,
+      }),
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
@@ -55,7 +53,6 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
     playground: true,
     introspection: true,
   });
-  // const path = "/";
   apolloServer.applyMiddleware({ app, cors: false });
 
   Connect()

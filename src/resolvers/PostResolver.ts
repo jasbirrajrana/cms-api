@@ -1,4 +1,4 @@
-import { isAuth } from "../middleware/isAuth";
+import { isAdmin, isAuth } from "../middleware/isAuth";
 import {
   Arg,
   Ctx,
@@ -37,15 +37,17 @@ export class PostResolver {
   }
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
+  @UseMiddleware(isAdmin)
   async createPost(
     @Arg("title", () => String) title: string,
     @Arg("body", () => String) body: string,
     @Arg("subtitle", { nullable: true }) subtitle: string,
     @Arg("description", { nullable: true }) description: string,
-    @Arg("tag",()=>String) tag:string,
+    @Arg("tag", () => String) tag: string,
 
     @Ctx() { req }: ctx
   ): Promise<boolean> {
+    //checking that whom is creating a new post *only admin is allowed to do this*
     const slug = slugify(title);
     const post = await PostModel.create({
       title,
@@ -54,9 +56,9 @@ export class PostResolver {
       slug,
       subtitle,
       description,
-     tag
+      tag,
     });
-    await post.save()
+    await post.save();
     if (!post) {
       return false;
     }
@@ -65,6 +67,7 @@ export class PostResolver {
 
   @Mutation(() => Post)
   @UseMiddleware(isAuth)
+  @UseMiddleware(isAdmin)
   async updatePost(
     @Arg("slug", () => String) slug: string,
     @Arg("title", { nullable: true }) title: string,

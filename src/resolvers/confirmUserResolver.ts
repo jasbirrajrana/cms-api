@@ -1,6 +1,5 @@
-import { client } from "../utils/redisConfig";
+import { client,getAsync } from "../utils/redisConfig";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
-import redis from "redis";
 import UserModel from "../schema/UserSchema";
 import { ctx } from "../Types/Mycontext";
 import { UserResponse } from "../Types/UserResponse";
@@ -12,20 +11,16 @@ export class ConfirmUserResolver {
     @Arg("token") token: string,
     @Ctx() { req }: ctx
   ): Promise<UserResponse> {
-    let e: any;
-
-    await client.get(token, function (error, value) {
-      if (!error) {
-        e = String(value);
-      }
-    });
-
-    const user = await UserModel.findOne({ e });
+    let emailid=await getAsync(token) 
+    let user = await UserModel.findOne({ email: emailid })
+    if (!user) {
+      throw new Error("Something went wrong!")
+    }
     if (user?.isVerfied) {
       return {
         errors: [
           {
-            message: "Already verified!",
+            message: "Already verified",
           },
         ],
       };

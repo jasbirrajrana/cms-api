@@ -29,10 +29,7 @@ const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 const redisConfig_1 = require("./utils/redisConfig");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
-    if (constants_1.__prod__) {
-        app.set("trust proxy", 1);
-    }
-    app.use(cors_1.default({ origin: "http://localhost:3000", credentials: true }));
+    app.use(cors_1.default({ origin: "http://localhost:3000/", credentials: true }));
     const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
@@ -62,7 +59,6 @@ const redisConfig_1 = require("./utils/redisConfig");
         }),
         context: ({ req, res }) => ({ req, res }),
         playground: true,
-        introspection: true,
     });
     apolloServer.applyMiddleware({ app, cors: false });
     db_1.Connect()

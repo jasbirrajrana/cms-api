@@ -16,10 +16,12 @@ import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
 (async () => {
   const app = express();
-  if (__prod__) {
-    app.set("trust proxy", 1);
-  }
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }));
+  // if (__prod__) {
+  //   app.set("trust proxy", 1);
+  // }
+  app.use(cors({ origin: "http://localhost:3000/", credentials: true }));
+  // app.use(cors())
+
   const RedisStore = connectRedis(session);
   app.use(
     session({
@@ -51,9 +53,8 @@ import { client } from "./utils/redisConfig";
     }),
     context: ({ req, res }) => ({ req, res }),
     playground: true,
-    introspection: true,
   });
-  apolloServer.applyMiddleware({ app, cors: false });
+  apolloServer.applyMiddleware({ app ,cors:false});
 
   Connect()
     .then(() => {

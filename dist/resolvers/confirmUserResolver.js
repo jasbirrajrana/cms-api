@@ -32,18 +32,16 @@ const UserResponse_1 = require("../Types/UserResponse");
 let ConfirmUserResolver = class ConfirmUserResolver {
     confirmUser(token, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            let e;
-            yield redisConfig_1.client.get(token, function (error, value) {
-                if (!error) {
-                    e = String(value);
-                }
-            });
-            const user = yield UserSchema_1.default.findOne({ e });
+            let emailid = yield redisConfig_1.getAsync(token);
+            let user = yield UserSchema_1.default.findOne({ email: emailid });
+            if (!user) {
+                throw new Error("Something went wrong!");
+            }
             if (user === null || user === void 0 ? void 0 : user.isVerfied) {
                 return {
                     errors: [
                         {
-                            message: "Already verified!",
+                            message: "Already verified",
                         },
                     ],
                 };

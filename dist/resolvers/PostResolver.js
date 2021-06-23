@@ -76,7 +76,7 @@ let PostResolver = class PostResolver {
                 slug,
                 subtitle,
                 description,
-                tag
+                tag,
             });
             yield post.save();
             if (!post) {
@@ -120,6 +120,7 @@ __decorate([
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    type_graphql_1.UseMiddleware(isAuth_1.isAdmin),
     __param(0, type_graphql_1.Arg("title", () => String)),
     __param(1, type_graphql_1.Arg("body", () => String)),
     __param(2, type_graphql_1.Arg("subtitle", { nullable: true })),
@@ -133,6 +134,7 @@ __decorate([
 __decorate([
     type_graphql_1.Mutation(() => PostSchema_1.Post),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
+    type_graphql_1.UseMiddleware(isAuth_1.isAdmin),
     __param(0, type_graphql_1.Arg("slug", () => String)),
     __param(1, type_graphql_1.Arg("title", { nullable: true })),
     __param(2, type_graphql_1.Arg("body", { nullable: true })),

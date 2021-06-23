@@ -29,6 +29,4 @@ const sendMailForConfirmation = (email, url) => __awaiter(void 0, void 0, void 0
     });
 });
 exports.sendMailForConfirmation = sendMailForConfirmation;
-let config = "j";
-console.log(config);
 //# sourceMappingURL=sendMail.js.map

@@ -12,21 +12,20 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAdmin = exports.isAuth = void 0;
+exports.findUser = void 0;
 const UserSchema_1 = __importDefault(require("../schema/UserSchema"));
-const isAuth = ({ context }, next) => {
-    if (!context.req.session.userId) {
-        throw new Error("Not Authenticated");
-    }
-    return next();
-};
-exports.isAuth = isAuth;
-const isAdmin = ({ context }, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield UserSchema_1.default.findById(context.req.session.userId);
-    if (!(user === null || user === void 0 ? void 0 : user.isAdmin)) {
-        throw new Error("Not Authenticated!");
-    }
-    return next();
+const redisConfig_1 = require("./redisConfig");
+const findUser = (token) => __awaiter(void 0, void 0, void 0, function* () {
+    yield redisConfig_1.client.get(token, function (err, reply) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!err) {
+                return yield UserSchema_1.default.findOne({ reply });
+            }
+            else {
+                throw new Error("Not a right way to do this!!");
+            }
+        });
+    });
 });
-exports.isAdmin = isAdmin;
-//# sourceMappingURL=isAuth.js.map
+exports.findUser = findUser;
+//# sourceMappingURL=findUser.js.map

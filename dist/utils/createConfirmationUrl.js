@@ -15,7 +15,7 @@ const redisConfig_1 = require("./redisConfig");
 const createConfirmationUrl = (email) => __awaiter(void 0, void 0, void 0, function* () {
     const token = uuid_1.v4();
     console.log("--->token", token);
-    yield redisConfig_1.client.set(token, email, "ex", 60 * 60 * 24);
+    yield redisConfig_1.client.set(token, email);
     return `http://localhost:3000/user/confirm/${token}`;
 });
 exports.createConfirmationUrl = createConfirmationUrl;

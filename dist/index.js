@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const apollo_server_express_1 = require("apollo-server-express");
 const db_1 = require("./config/db");
+const graphql_upload_1 = require("graphql-upload");
 const express_1 = __importDefault(require("express"));
 const type_graphql_1 = require("type-graphql");
 const connect_redis_1 = __importDefault(require("connect-redis"));
@@ -27,9 +28,11 @@ const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
 const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 const redisConfig_1 = require("./utils/redisConfig");
+const ImageResolver_1 = require("./resolvers/ImageResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     app.use(cors_1.default({ origin: "http://localhost:3000/", credentials: true }));
+    app.use(graphql_upload_1.graphqlUploadExpress());
     const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
@@ -55,9 +58,11 @@ const redisConfig_1 = require("./utils/redisConfig");
                 UserResolver_1.UserResolver,
                 PostResolver_1.PostResolver,
                 confirmUserResolver_1.ConfirmUserResolver,
+                ImageResolver_1.ImageResolver,
             ],
         }),
         context: ({ req, res }) => ({ req, res }),
+        uploads: false,
         playground: true,
     });
     apolloServer.applyMiddleware({ app, cors: false });

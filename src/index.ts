@@ -2,6 +2,8 @@ import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
 import { Connect } from "./config/db";
 // import MongoStore from "connect-mongo";
+import { graphqlUploadExpress } from "graphql-upload";
+
 import express from "express";
 import { buildSchema } from "type-graphql";
 import connectRedis from "connect-redis";
@@ -14,12 +16,15 @@ import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
+import { ImageResolver } from "./resolvers/ImageResolver";
 (async () => {
   const app = express();
   // if (__prod__) {
   //   app.set("trust proxy", 1);
   // }
   app.use(cors({ origin: "http://localhost:3000/", credentials: true }));
+  app.use(graphqlUploadExpress());
+
   // app.use(cors())
 
   const RedisStore = connectRedis(session);
@@ -49,12 +54,14 @@ import { client } from "./utils/redisConfig";
         UserResolver,
         PostResolver,
         ConfirmUserResolver,
+        ImageResolver,
       ],
     }),
     context: ({ req, res }) => ({ req, res }),
+    uploads: false,
     playground: true,
   });
-  apolloServer.applyMiddleware({ app ,cors:false});
+  apolloServer.applyMiddleware({ app, cors: false });
 
   Connect()
     .then(() => {

@@ -62,6 +62,7 @@ let UserResolver = class UserResolver {
         }));
     }
     me({ req }) {
+        console.log(req.session.userId);
         if (!req.session.userId) {
             return null;
         }

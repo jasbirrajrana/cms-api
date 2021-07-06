@@ -16,7 +16,7 @@ import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
-import { ImageResolver } from "./resolvers/ImageResolver";
+import { storage } from "./utils/storage";
 (async () => {
   const app = express();
   // if (__prod__) {
@@ -26,7 +26,7 @@ import { ImageResolver } from "./resolvers/ImageResolver";
   app.use(graphqlUploadExpress());
 
   // app.use(cors())
-
+  // storage.getBuckets().then((x) => console.log(x));
   const RedisStore = connectRedis(session);
   app.use(
     session({
@@ -54,7 +54,6 @@ import { ImageResolver } from "./resolvers/ImageResolver";
         UserResolver,
         PostResolver,
         ConfirmUserResolver,
-        ImageResolver,
       ],
     }),
     context: ({ req, res }) => ({ req, res }),

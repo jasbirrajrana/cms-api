@@ -66,7 +66,7 @@ let PostResolver = class PostResolver {
             return posts;
         });
     }
-    createPost(title, body, subtitle, description, tag, { req }) {
+    createPost(title, body, subtitle, description, featureImage, tag, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const slug = slugify_1.default(title);
             const post = yield PostSchema_1.default.create({
@@ -74,14 +74,12 @@ let PostResolver = class PostResolver {
                 body,
                 author: req.session.userId,
                 slug,
-                subtitle,
                 description,
+                featureImage,
                 tag,
+                subtitle,
             });
             yield post.save();
-            if (!post) {
-                return false;
-            }
             return true;
         });
     }
@@ -125,10 +123,11 @@ __decorate([
     __param(1, type_graphql_1.Arg("body", () => String)),
     __param(2, type_graphql_1.Arg("subtitle", { nullable: true })),
     __param(3, type_graphql_1.Arg("description", { nullable: true })),
-    __param(4, type_graphql_1.Arg("tag", () => String)),
-    __param(5, type_graphql_1.Ctx()),
+    __param(4, type_graphql_1.Arg("featureImage", () => String)),
+    __param(5, type_graphql_1.Arg("tag", () => String)),
+    __param(6, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, String, Object]),
+    __metadata("design:paramtypes", [String, String, String, String, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "createPost", null);
 __decorate([

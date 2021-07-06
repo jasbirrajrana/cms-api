@@ -20,25 +20,38 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ImageResolver = void 0;
 const type_graphql_1 = require("type-graphql");
 const graphql_upload_1 = require("graphql-upload");
-const fs_1 = require("fs");
+const cloudinary_1 = __importDefault(require("cloudinary"));
 let ImageResolver = class ImageResolver {
     addFeatureImage({ createReadStream, filename }) {
         return __awaiter(this, void 0, void 0, function* () {
-            return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
-                return createReadStream()
-                    .pipe(fs_1.createWriteStream(__dirname + `/../../images/${filename}`))
-                    .on("finish", () => resolve(true))
-                    .on("error", () => reject(true));
-            }));
+            cloudinary_1.default.v2.config({
+                cloud_name: process.env.CLOUDINARY_NAME,
+                api_secret: process.env.CLOUDINARY_API_SECRET,
+                api_key: process.env.CLOUDINARY_API,
+            });
+            try {
+                const result = yield cloudinary_1.default.v2.uploader.upload(filename, {
+                    allowed_formats: ["jpg", "jpeg", "png"],
+                    public_id: "",
+                    folder: "blogps",
+                });
+                return `Successful-Photo URL: ${result.url}`;
+            }
+            catch (error) {
+                throw new Error(`Image could not be uploaded:${error.message}`);
+            }
         });
     }
 };
 __decorate([
-    type_graphql_1.Mutation(() => Boolean),
+    type_graphql_1.Mutation(() => String),
     __param(0, type_graphql_1.Arg("featureImage", () => graphql_upload_1.GraphQLUpload)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

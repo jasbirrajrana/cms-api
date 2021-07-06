@@ -1,0 +1,14 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.bucketName = exports.storage = void 0;
+const path_1 = __importDefault(require("path"));
+const storage_1 = require("@google-cloud/storage");
+exports.storage = new storage_1.Storage({
+    keyFilename: path_1.default.join(__dirname, "../../jasbirrajranablog-cfafcde28b19.json"),
+    projectId: "jasbirrajranablog",
+});
+exports.bucketName = exports.storage.bucket("jasbirrajranablog");
+//# sourceMappingURL=storage.js.map

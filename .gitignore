@@ -106,7 +106,7 @@ storybook-static
 
 # vuepress build output
 .vuepress/dist
-
+/jasbirrajranablog-cfafcde28b19.json
 # Serverless directories
 .serverless/
 

@@ -26,6 +26,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: ctx) {
+    console.log(req.session.userId);
     if (!req.session.userId) {
       return null;
     }

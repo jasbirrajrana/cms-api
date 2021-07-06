@@ -10,6 +10,8 @@ import {
 import PostModel, { Post } from "../schema/PostSchema";
 import { ctx } from "../Types/Mycontext";
 import slugify from "slugify";
+import { FileUpload, GraphQLUpload } from "graphql-upload";
+import { bucketName, storage } from "../utils/storage";
 
 @ObjectType()
 export class PostResolver {
@@ -43,25 +45,63 @@ export class PostResolver {
     @Arg("body", () => String) body: string,
     @Arg("subtitle", { nullable: true }) subtitle: string,
     @Arg("description", { nullable: true }) description: string,
-    @Arg("tag", () => String) tag: string,
-
+    // @Arg("featureImage", () => GraphQLUpload)
+    @Arg("featureImage", () => String) featureImage: string,
+    @Arg("tag", () => String)
+    tag: string,
+    // { createReadStream, filename }: FileUpload,
     @Ctx() { req }: ctx
   ): Promise<boolean> {
-    //checking that whom is creating a new post *only admin is allowed to do this*
     const slug = slugify(title);
+
     const post = await PostModel.create({
       title,
       body,
       author: req.session.userId,
       slug,
-      subtitle,
       description,
+      featureImage,
       tag,
+      subtitle,
     });
+
     await post.save();
-    if (!post) {
-      return false;
-    }
+    // let featureImageUrl = "";
+    // //checking that whom is creating a new post *only admin is allowed to do this*
+    // await new Promise(async (resolve, reject) =>
+    //   createReadStream()
+    //     .pipe(
+    //       bucketName.file(filename).createWriteStream({
+    //         resumable: false,
+    //         gzip: true,
+    //       })
+    //     )
+    //     .on("error", reject)
+    //     .on("finish", () =>
+    //       bucketName
+    //         .file(filename)
+    //         .makePublic()
+    //         .then(async (e) => {
+    //           // console.log(
+    //           //   `https://storage.googleapis.com/jasbirrajranablog/${e[0].object}`
+    //           // );
+    //           featureImageUrl = `https://storage.googleapis.com/jasbirrajranablog/${e[0].object}`;
+    //           console.log(featureImageUrl);
+    //           const slug = slugify(title);
+    //           const post = await PostModel.create({
+    //             title,
+    //             body,
+    //             author: req.session.userId,
+    //             slug,
+    //             description,
+    //             featureImage: featureImageUrl,
+    //             tag,
+    //             subtitle,
+    //           });
+    //           await post.save();
+    //         })
+    // )
+    // );
     return true;
   }
 

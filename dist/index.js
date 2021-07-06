@@ -28,7 +28,6 @@ const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
 const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 const redisConfig_1 = require("./utils/redisConfig");
-const ImageResolver_1 = require("./resolvers/ImageResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     app.use(cors_1.default({ origin: "http://localhost:3000/", credentials: true }));
@@ -58,7 +57,6 @@ const ImageResolver_1 = require("./resolvers/ImageResolver");
                 UserResolver_1.UserResolver,
                 PostResolver_1.PostResolver,
                 confirmUserResolver_1.ConfirmUserResolver,
-                ImageResolver_1.ImageResolver,
             ],
         }),
         context: ({ req, res }) => ({ req, res }),

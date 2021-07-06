@@ -4,12 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "start": "node dist/index.js",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon -r dotenv/config dist/index.js",
     "commit": "cz",
     "import:data": "node dist/seeder.js"
   },
   "dependencies": {
+    "@google-cloud/storage": "^5.8.5",
     "@sendgrid/mail": "^7.4.4",
     "@typegoose/typegoose": "^7.6.0",
     "apollo-server-express": "^2.24.0",
@@ -19,6 +21,7 @@
     "body-parser": "^1.19.0",
     "chalk": "^4.1.1",
     "class-validator": "^0.13.1",
+    "cloudinary": "^1.26.1",
     "connect-mongo": "^4.4.1",
     "connect-redis": "^5.2.0",
     "cors": "^2.8.5",

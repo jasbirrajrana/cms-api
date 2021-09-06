@@ -9,6 +9,7 @@ const util_1 = require("util");
 exports.client = redis_1.default.createClient({
     url: process.env.REDIS_PUBLIC_ENDPOINT,
     auth_pass: process.env.REDIS_DATABASE_PASSWORD,
+    port: process.env.REDIS_CACHE_PORT,
 });
 exports.getAsync = util_1.promisify(exports.client.get).bind(exports.client);
 exports.client.on("error", (err) => {

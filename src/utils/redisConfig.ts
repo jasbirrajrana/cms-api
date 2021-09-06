@@ -1,10 +1,13 @@
-import redis from 'redis'
-import { promisify } from 'util'
+import redis from "redis";
+import { promisify } from "util";
+
 export const client = redis.createClient({
   url: process.env.REDIS_PUBLIC_ENDPOINT!,
   auth_pass: process.env.REDIS_DATABASE_PASSWORD!,
+  //@ts-ignore
+  port: process.env.REDIS_CACHE_PORT,
 });
-export const getAsync = promisify(client.get).bind(client)
+export const getAsync = promisify(client.get).bind(client);
 
 // export const client = new Redis({
 //   host: process.env.REDIS_PUBLIC_ENDPOINT,

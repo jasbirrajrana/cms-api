@@ -36,7 +36,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
     }
     app.use(graphql_upload_1.graphqlUploadExpress());
     var corsOptions = {
-        origin: ["https://test.eduyear.in", "http://localhost:3000"],
+        origin: ["https://cms-frontend-psi.vercel.app/", "http://localhost:3000"],
         optionsSuccessStatus: 200,
     };
     app.use(cors_1.default(Object.assign(Object.assign({}, corsOptions), { credentials: true })));

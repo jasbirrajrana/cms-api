@@ -25,7 +25,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
   }
   app.use(graphqlUploadExpress());
   var corsOptions = {
-    origin: ["https://test.eduyear.in", "http://localhost:3000"],
+    origin: ["https://cms-frontend-psi.vercel.app/", "http://localhost:3000"],
     optionsSuccessStatus: 200, // For legacy browser support,
   };
 

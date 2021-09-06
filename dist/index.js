@@ -71,6 +71,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
         context: ({ req, res }) => ({ req, res }),
         uploads: false,
         playground: true,
+        introspection: true,
     });
     apolloServer.applyMiddleware({ app, cors: false });
     db_1.Connect()

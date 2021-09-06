@@ -16,7 +16,6 @@ import { COOKIE_NAME, __prod__ } from "./Types/constants";
 import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
-import { storage } from "./utils/storage";
 import { UploadResolver } from "./resolvers/uploadImageResolver";
 (async () => {
   const app = express();
@@ -64,6 +63,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
     context: ({ req, res }) => ({ req, res }),
     uploads: false,
     playground: true,
+    introspection: true,
   });
   apolloServer.applyMiddleware({ app, cors: false });
 

@@ -1,5 +1,12 @@
 import UserModel, { User } from "../schema/UserSchema";
-import { Arg, Ctx, Mutation, ObjectType, Query } from "type-graphql";
+import {
+  Arg,
+  Ctx,
+  Mutation,
+  ObjectType,
+  Query,
+  UseMiddleware,
+} from "type-graphql";
 import * as argon2 from "argon2";
 import { UserResponse } from "../Types/UserResponse";
 import { ctx } from "../Types/Mycontext";
@@ -7,6 +14,7 @@ import { COOKIE_NAME } from "../Types/constants";
 import PostModel, { Post } from "../schema/PostSchema";
 import { sendMailForConfirmation } from "../config/sendMail";
 import { createConfirmationUrl } from "../utils/createConfirmationUrl";
+import { isSuperAdmin } from "../middleware/isAuth";
 @ObjectType()
 export class UserResolver {
   @Mutation(() => Boolean)
@@ -141,6 +149,12 @@ export class UserResolver {
     return posts;
   }
 
+  @Query(() => [User])
+  @UseMiddleware(isSuperAdmin)
+  async getAllUsers() {
+    const users = await UserModel.find({});
+    return users;
+  }
   @Query(() => [Post])
   async getMyPosts(@Ctx() { req }: ctx) {
     const posts = await PostModel.find({ author: req.session.userId });

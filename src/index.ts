@@ -17,15 +17,19 @@ import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
 import { storage } from "./utils/storage";
+import { UploadResolver } from "./resolvers/uploadImageResolver";
 (async () => {
   const app = express();
-  // if (__prod__) {
-  //   app.set("trust proxy", 1);
-  // }
-  app.use(cors({ origin: "http://localhost:3000/", credentials: true }));
+  if (__prod__) {
+    app.set("trust proxy", 1);
+  }
   app.use(graphqlUploadExpress());
+  var corsOptions = {
+    origin: ["https://test.eduyear.in", "http://localhost:3000"],
+    optionsSuccessStatus: 200, // For legacy browser support,
+  };
 
-  // app.use(cors())
+  app.use(cors({ ...corsOptions, credentials: true }));
   // storage.getBuckets().then((x) => console.log(x));
   const RedisStore = connectRedis(session);
   app.use(
@@ -54,6 +58,7 @@ import { storage } from "./utils/storage";
         UserResolver,
         PostResolver,
         ConfirmUserResolver,
+        UploadResolver,
       ],
     }),
     context: ({ req, res }) => ({ req, res }),

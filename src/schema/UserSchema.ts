@@ -22,6 +22,10 @@ export class User {
   @Prop({ type: () => Boolean, default: false })
   isAdmin: boolean;
 
+  @Field()
+  @Prop({ type: () => Boolean, default: false })
+  isSuperAdmin: boolean;
+
   @Prop()
   password: string;
 

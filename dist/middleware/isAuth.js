@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isAdmin = exports.isAuth = void 0;
+exports.isSuperAdmin = exports.isAdmin = exports.isAuth = void 0;
 const UserSchema_1 = __importDefault(require("../schema/UserSchema"));
 const isAuth = ({ context }, next) => {
     if (!context.req.session.userId) {
@@ -29,4 +29,12 @@ const isAdmin = ({ context }, next) => __awaiter(void 0, void 0, void 0, functio
     return next();
 });
 exports.isAdmin = isAdmin;
+const isSuperAdmin = ({ context }, next) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield UserSchema_1.default.findById(context.req.session.userId);
+    if (!(user === null || user === void 0 ? void 0 : user.isSuperAdmin)) {
+        throw new Error("Not Authenticated as Super Admin");
+    }
+    return next();
+});
+exports.isSuperAdmin = isSuperAdmin;
 //# sourceMappingURL=isAuth.js.map

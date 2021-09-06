@@ -49,6 +49,7 @@ const constants_1 = require("../Types/constants");
 const PostSchema_1 = __importStar(require("../schema/PostSchema"));
 const sendMail_1 = require("../config/sendMail");
 const createConfirmationUrl_1 = require("../utils/createConfirmationUrl");
+const isAuth_1 = require("../middleware/isAuth");
 let UserResolver = class UserResolver {
     logout({ req, res }) {
         return new Promise((resolve) => req.session.destroy((err) => {
@@ -154,6 +155,12 @@ let UserResolver = class UserResolver {
             return posts;
         });
     }
+    getAllUsers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const users = yield UserSchema_1.default.find({});
+            return users;
+        });
+    }
     getMyPosts({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const posts = yield PostSchema_1.default.find({ author: req.session.userId });
@@ -200,6 +207,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "getPosts", null);
+__decorate([
+    type_graphql_1.Query(() => [UserSchema_1.User]),
+    type_graphql_1.UseMiddleware(isAuth_1.isSuperAdmin),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "getAllUsers", null);
 __decorate([
     type_graphql_1.Query(() => [PostSchema_1.Post]),
     __param(0, type_graphql_1.Ctx()),

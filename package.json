@@ -10,10 +10,7 @@
     "commit": "cz",
     "import:data": "node dist/seeder.js"
   },
-  "engines": {
-    "node": "^12.20",
-    "npm": "5.x"
-  },
+
   "dependencies": {
     "@google-cloud/storage": "^5.8.5",
     "@sendgrid/mail": "^7.4.4",

@@ -3,12 +3,12 @@ import { Storage } from "@google-cloud/storage";
 export const storage = new Storage({
   keyFilename: path.join(
     __dirname,
-    "../../jasbirrajranablog-cfafcde28b19.json"
+    "../../jasbirrajranablog-e552f710724c.json"
   ),
   projectId: "jasbirrajranablog",
 });
 
-export const bucketName = storage.bucket("jasbirrajranablog");
+export const bucketName = storage.bucket("jasbirrajranablogimages");
 
 // async function disableUniformBucketLevelAccess() {
 //   // Disables uniform bucket-level access for the bucket

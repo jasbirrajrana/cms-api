@@ -28,10 +28,18 @@ const constants_1 = require("./Types/constants");
 const PostResolver_1 = require("./resolvers/PostResolver");
 const confirmUserResolver_1 = require("./resolvers/confirmUserResolver");
 const redisConfig_1 = require("./utils/redisConfig");
+const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
-    app.use(cors_1.default({ origin: "http://localhost:3000/", credentials: true }));
+    if (constants_1.__prod__) {
+        app.set("trust proxy", 1);
+    }
     app.use(graphql_upload_1.graphqlUploadExpress());
+    var corsOptions = {
+        origin: ["https://test.eduyear.in", "http://localhost:3000"],
+        optionsSuccessStatus: 200,
+    };
+    app.use(cors_1.default(Object.assign(Object.assign({}, corsOptions), { credentials: true })));
     const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
@@ -57,6 +65,7 @@ const redisConfig_1 = require("./utils/redisConfig");
                 UserResolver_1.UserResolver,
                 PostResolver_1.PostResolver,
                 confirmUserResolver_1.ConfirmUserResolver,
+                uploadImageResolver_1.UploadResolver,
             ],
         }),
         context: ({ req, res }) => ({ req, res }),

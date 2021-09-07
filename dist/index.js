@@ -31,6 +31,7 @@ const redisConfig_1 = require("./utils/redisConfig");
 const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
+    console.log(constants_1.__prod__);
     if (constants_1.__prod__) {
         app.set("trust proxy", 1);
     }
@@ -50,7 +51,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
         cookie: {
             maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,
-            sameSite: "lax",
+            sameSite: "none",
             secure: constants_1.__prod__,
             domain: constants_1.__prod__ ? ".herokuapp.com" : undefined,
         },

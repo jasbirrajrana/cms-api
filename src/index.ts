@@ -19,6 +19,7 @@ import { client } from "./utils/redisConfig";
 import { UploadResolver } from "./resolvers/uploadImageResolver";
 (async () => {
   const app = express();
+  console.log(__prod__);
   if (__prod__) {
     app.set("trust proxy", 1);
   }
@@ -41,7 +42,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
       cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
-        sameSite: "lax",
+        sameSite: "none",
         secure: __prod__,
         domain: __prod__ ? ".herokuapp.com" : undefined,
       },

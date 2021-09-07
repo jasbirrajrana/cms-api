@@ -31,7 +31,6 @@ const redisConfig_1 = require("./utils/redisConfig");
 const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
 (() => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
-    console.log(constants_1.__prod__);
     if (constants_1.__prod__) {
         app.set("trust proxy", 1);
     }
@@ -40,6 +39,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
         origin: ["https://cms-frontend-psi.vercel.app/", "http://localhost:3000"],
         optionsSuccessStatus: 200,
     };
+    app.enable("trust proxy");
     app.use(cors_1.default(Object.assign(Object.assign({}, corsOptions), { credentials: true })));
     const RedisStore = connect_redis_1.default(express_session_1.default);
     app.use(express_session_1.default({
@@ -49,16 +49,14 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
             disableTouch: true,
         }),
         cookie: {
-            maxAge: 1000 * 60 * 60 * 24 * 7,
+            maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
             httpOnly: true,
-            path: "/",
-            sameSite: "none",
-            secure: false,
+            sameSite: "lax",
+            secure: constants_1.__prod__,
         },
         secret: process.env.SESSION_SECRET,
         saveUninitialized: false,
         resave: false,
-        proxy: true,
     }));
     const port = process.env.PORT || 5000;
     const apolloServer = new apollo_server_express_1.ApolloServer({

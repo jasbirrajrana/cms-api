@@ -18,7 +18,6 @@ import { client } from "./utils/redisConfig";
 import { UploadResolver } from "./resolvers/uploadImageResolver";
 (async () => {
   const app = express();
-  console.log(__prod__);
   if (__prod__) {
     app.set("trust proxy", 1);
   }
@@ -27,7 +26,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
     origin: ["https://cms-frontend-psi.vercel.app/", "http://localhost:3000"],
     optionsSuccessStatus: 200, // For legacy browser support,
   };
-
+  app.enable("trust proxy");
   app.use(cors({ ...corsOptions, credentials: true }));
   const RedisStore = connectRedis(session);
   app.use(
@@ -38,16 +37,14 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
         disableTouch: true,
       }),
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
         httpOnly: true,
-        path: "/",
-        sameSite: "none",
-        secure: false,
+        sameSite: "lax",
+        secure: __prod__,
       },
       secret: process.env.SESSION_SECRET!,
       saveUninitialized: false,
       resave: false,
-      proxy: true,
     })
   );
   const port: any = process.env.PORT! || 5000;

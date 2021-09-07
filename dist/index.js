@@ -52,6 +52,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
             httpOnly: true,
             sameSite: "lax",
             secure: constants_1.__prod__,
+            domain: constants_1.__prod__ ? ".herokuapp.com" : undefined,
         },
         secret: process.env.SESSION_SECRET,
         saveUninitialized: false,

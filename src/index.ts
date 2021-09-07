@@ -43,6 +43,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
+        domain: __prod__ ? ".herokuapp.com" : undefined,
       },
       secret: process.env.SESSION_SECRET!,
       saveUninitialized: false,

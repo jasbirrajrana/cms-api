@@ -58,6 +58,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
         secret: process.env.SESSION_SECRET,
         saveUninitialized: false,
         resave: false,
+        proxy: true,
     }));
     const port = process.env.PORT || 5000;
     const apolloServer = new apollo_server_express_1.ApolloServer({

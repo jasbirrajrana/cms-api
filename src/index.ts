@@ -1,7 +1,6 @@
 import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
 import { Connect } from "./config/db";
-// import MongoStore from "connect-mongo";
 import { graphqlUploadExpress } from "graphql-upload";
 
 import express from "express";
@@ -30,7 +29,6 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
   };
 
   app.use(cors({ ...corsOptions, credentials: true }));
-  // storage.getBuckets().then((x) => console.log(x));
   const RedisStore = connectRedis(session);
   app.use(
     session({
@@ -49,6 +47,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
       secret: process.env.SESSION_SECRET!,
       saveUninitialized: false,
       resave: false,
+      proxy: true,
     })
   );
   const port: any = process.env.PORT! || 5000;

@@ -66,6 +66,19 @@ let PostResolver = class PostResolver {
             return posts;
         });
     }
+    Like(postId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const post = yield PostSchema_1.default.findById(postId);
+            if (!post) {
+                return;
+            }
+            if (post) {
+                post.likes = post.likes + 1;
+                yield post.save();
+            }
+            return post.likes;
+        });
+    }
     createPost(title, body, subtitle, description, featureImage, tag, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const slug = slugify_1.default(title);
@@ -115,6 +128,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "getAllPosts", null);
+__decorate([
+    type_graphql_1.Mutation(() => Number),
+    __param(0, type_graphql_1.Arg("postId", () => String)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "Like", null);
 __decorate([
     type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),

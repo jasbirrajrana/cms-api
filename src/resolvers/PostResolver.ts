@@ -37,6 +37,20 @@ export class PostResolver {
 
     return posts;
   }
+
+  @Mutation(() => Number)
+  async Like(@Arg("postId", () => String) postId: string) {
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return;
+    }
+
+    if (post) {
+      post.likes = post.likes + 1;
+      await post.save();
+    }
+    return post.likes;
+  }
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   @UseMiddleware(isAdmin)

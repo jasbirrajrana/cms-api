@@ -29,10 +29,13 @@ export class Post {
   @Field()
   @Prop({ type: () => String, required: true })
   description: string;
+  @Field()
+  @Prop({ type: () => Number, default: 0 })
+  likes: number;
 
   @Field()
   @Prop({ type: () => String, required: true })
-  tag:string
+  tag: string;
 
   @Field()
   @Prop({

@@ -51,6 +51,11 @@ __decorate([
 ], Post.prototype, "description", void 0);
 __decorate([
     type_graphql_1.Field(),
+    typegoose_1.Prop({ type: () => Number, default: 0 }),
+    __metadata("design:type", Number)
+], Post.prototype, "likes", void 0);
+__decorate([
+    type_graphql_1.Field(),
     typegoose_1.Prop({ type: () => String, required: true }),
     __metadata("design:type", String)
 ], Post.prototype, "tag", void 0);

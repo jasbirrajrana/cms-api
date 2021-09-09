@@ -36,7 +36,12 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
     }
     app.use(graphql_upload_1.graphqlUploadExpress());
     var corsOptions = {
-        origin: ["https://cms-frontend-psi.vercel.app/", "http://localhost:3000"],
+        origin: [
+            "https://cms-frontend-psi.vercel.app/",
+            "http://localhost:3000",
+            "https://www.jasbirblog.tech/",
+            "jasbirblog.tech/",
+        ],
         optionsSuccessStatus: 200,
     };
     app.enable("trust proxy");

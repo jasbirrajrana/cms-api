@@ -69,7 +69,7 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
                 uploadImageResolver_1.UploadResolver,
             ],
         }),
-        context: ({ req, res }) => ({ req, res }),
+        context: ({ req, res }) => ({ req, res, redis: redisConfig_1.client }),
         uploads: false,
         playground: true,
         introspection: true,

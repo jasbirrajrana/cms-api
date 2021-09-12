@@ -2,7 +2,6 @@ import "reflect-metadata";
 import { ApolloServer } from "apollo-server-express";
 import { Connect } from "./config/db";
 import { graphqlUploadExpress } from "graphql-upload";
-
 import express from "express";
 import { buildSchema } from "type-graphql";
 import connectRedis from "connect-redis";
@@ -16,6 +15,7 @@ import { PostResolver } from "./resolvers/PostResolver";
 import { ConfirmUserResolver } from "./resolvers/confirmUserResolver";
 import { client } from "./utils/redisConfig";
 import { UploadResolver } from "./resolvers/uploadImageResolver";
+
 (async () => {
   const app = express();
   if (__prod__) {
@@ -29,10 +29,12 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
   app.enable("trust proxy");
   app.use(cors({ ...corsOptions, credentials: true }));
   const RedisStore = connectRedis(session);
+
   app.use(
     session({
       name: COOKIE_NAME,
       store: new RedisStore({
+        //@ts-ignore
         client: client,
         disableTouch: true,
       }),
@@ -58,7 +60,7 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
         UploadResolver,
       ],
     }),
-    context: ({ req, res }) => ({ req, res }),
+    context: ({ req, res }) => ({ req, res, redis: client }),
     uploads: false,
     playground: true,
     introspection: true,

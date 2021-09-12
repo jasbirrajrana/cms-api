@@ -41,7 +41,7 @@ export class UserResolver {
     console.log(req.session.userId);
     return UserModel.findById(req.session.userId);
   }
-
+  @Query(() => User, { nullable: true })
   @Mutation(() => UserResponse)
   async login(
     @Arg("email", () => String) email: string,
@@ -157,7 +157,10 @@ export class UserResolver {
   }
   @Query(() => [Post])
   async getMyPosts(@Ctx() { req }: ctx) {
-    const posts = await PostModel.find({ author: req.session.userId });
+    const posts = await PostModel.find({ author: req.session.userId }).populate(
+      "author",
+      "username _id email"
+    );
     return posts;
   }
 }

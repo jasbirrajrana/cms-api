@@ -30,9 +30,8 @@ const type_graphql_1 = require("type-graphql");
 const UserSchema_1 = __importDefault(require("../schema/UserSchema"));
 const UserResponse_1 = require("../Types/UserResponse");
 let ConfirmUserResolver = class ConfirmUserResolver {
-    confirmUser(token, { req }) {
+    confirmUser(token, { req, redis }) {
         return __awaiter(this, void 0, void 0, function* () {
-            let emailid = yield redisConfig_1.getAsync(token);
             let user = yield UserSchema_1.default.findOne({ email: emailid });
             if (!user) {
                 throw new Error("Something went wrong!");

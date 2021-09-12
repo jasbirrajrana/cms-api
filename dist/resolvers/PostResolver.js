@@ -59,11 +59,22 @@ let PostResolver = class PostResolver {
             return post;
         });
     }
-    getAllPosts() {
+    getAllPosts({ redis }) {
         return __awaiter(this, void 0, void 0, function* () {
             const posts = yield PostSchema_1.default.find({}).populate("author", "username _id email");
-            console.log(posts);
+            if (!posts) {
+                return [];
+            }
             return posts;
+        });
+    }
+    getPostById(post_id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const post = yield PostSchema_1.default.findById(post_id).populate("author", "username _id email");
+            if (!post) {
+                throw new Error("No post found");
+            }
+            return post;
         });
     }
     Like(postId) {
@@ -96,22 +107,27 @@ let PostResolver = class PostResolver {
             return true;
         });
     }
-    updatePost(slug, title, body, subtitle, description) {
+    updatePost(id, title, body, tag, subtitle, description, featureImage) {
         return __awaiter(this, void 0, void 0, function* () {
-            const post = yield PostSchema_1.default.findOne({ slug }).populate("author", "username _id, email");
+            const post = yield PostSchema_1.default.findById(id).populate("author", "username _id, email");
             if (!post) {
                 throw new Error("Post not found!");
             }
             if (post) {
                 post.title = title || post.title;
+                post.tag = tag || post.tag;
                 post.subtitle = subtitle || post.subtitle;
                 post.slug = title ? slugify_1.default(title) : post.slug;
                 post.body = body || post.body;
+                if (featureImage === "") {
+                    post.featureImage = post.featureImage;
+                }
+                post.featureImage = featureImage || post.featureImage;
                 post.description = description || post.description;
             }
-            const updatedPost = yield post.save();
+            yield post.save();
             console.log("updated!");
-            return updatedPost;
+            return true;
         });
     }
 };
@@ -124,10 +140,18 @@ __decorate([
 ], PostResolver.prototype, "getPostByslug", null);
 __decorate([
     type_graphql_1.Query(() => [PostSchema_1.Post]),
+    __param(0, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "getAllPosts", null);
+__decorate([
+    type_graphql_1.Query(() => PostSchema_1.Post),
+    __param(0, type_graphql_1.Arg("post_id", () => String)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PostResolver.prototype, "getPostById", null);
 __decorate([
     type_graphql_1.Mutation(() => Number),
     __param(0, type_graphql_1.Arg("postId", () => String)),
@@ -151,16 +175,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "createPost", null);
 __decorate([
-    type_graphql_1.Mutation(() => PostSchema_1.Post),
+    type_graphql_1.Mutation(() => Boolean),
     type_graphql_1.UseMiddleware(isAuth_1.isAuth),
     type_graphql_1.UseMiddleware(isAuth_1.isAdmin),
-    __param(0, type_graphql_1.Arg("slug", () => String)),
+    __param(0, type_graphql_1.Arg("id", () => String)),
     __param(1, type_graphql_1.Arg("title", { nullable: true })),
     __param(2, type_graphql_1.Arg("body", { nullable: true })),
-    __param(3, type_graphql_1.Arg("subtitle", { nullable: true })),
-    __param(4, type_graphql_1.Arg("description", { nullable: true })),
+    __param(3, type_graphql_1.Arg("tag", { nullable: true })),
+    __param(4, type_graphql_1.Arg("subtitle", { nullable: true })),
+    __param(5, type_graphql_1.Arg("description", { nullable: true })),
+    __param(6, type_graphql_1.Arg("featureImage", { nullable: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, String, String]),
+    __metadata("design:paramtypes", [String, String, String, String, String, String, String]),
     __metadata("design:returntype", Promise)
 ], PostResolver.prototype, "updatePost", null);
 PostResolver = __decorate([

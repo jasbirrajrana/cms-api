@@ -1,0 +1,1 @@
+{"version":3,"file":"getPosts.js","sourceRoot":"","sources":["../../src/utils/getPosts.ts"],"names":[],"mappings":";;;;;;;;;;;;;;;AAAA,sEAA6C;AAEtC,MAAM,YAAY,GAAG,GAAS,EAAE;IACrC,MAAM,KAAK,GAAG,MAAM,oBAAS,CAAC,IAAI,CAAC,EAAE,CAAC,CAAC,QAAQ,CAC7C,QAAQ,EACR,oBAAoB,CACrB,CAAC;IACF,OAAO,KAAK,CAAC;AACf,CAAC,CAAA,CAAC;AANW,QAAA,YAAY,gBAMvB"}

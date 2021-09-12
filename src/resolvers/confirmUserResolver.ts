@@ -1,4 +1,4 @@
-import { client, getAsync } from "../utils/redisConfig";
+import { client } from "../utils/redisConfig";
 import { Arg, Ctx, Mutation, Resolver } from "type-graphql";
 import UserModel from "../schema/UserSchema";
 import { ctx } from "../Types/Mycontext";
@@ -9,9 +9,10 @@ export class ConfirmUserResolver {
   @Mutation(() => UserResponse)
   async confirmUser(
     @Arg("token") token: string,
-    @Ctx() { req }: ctx
+    @Ctx() { req, redis }: ctx
   ): Promise<UserResponse> {
-    let emailid = await getAsync(token);
+    // let emailid = await redis.get(token);
+    //@ts-ignore
     let user = await UserModel.findOne({ email: emailid });
     if (!user) {
       throw new Error("Something went wrong!");

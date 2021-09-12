@@ -163,7 +163,7 @@ let UserResolver = class UserResolver {
     }
     getMyPosts({ req }) {
         return __awaiter(this, void 0, void 0, function* () {
-            const posts = yield PostSchema_1.default.find({ author: req.session.userId });
+            const posts = yield PostSchema_1.default.find({ author: req.session.userId }).populate("author", "username _id email");
             return posts;
         });
     }
@@ -183,6 +183,7 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "me", null);
 __decorate([
+    type_graphql_1.Query(() => UserSchema_1.User, { nullable: true }),
     type_graphql_1.Mutation(() => UserResponse_1.UserResponse),
     __param(0, type_graphql_1.Arg("email", () => String)),
     __param(1, type_graphql_1.Arg("password", () => String)),

@@ -12,6 +12,11 @@ import { ctx } from "../Types/Mycontext";
 import slugify from "slugify";
 import { FileUpload, GraphQLUpload } from "graphql-upload";
 import { bucketName, storage } from "../utils/storage";
+import { client } from "../utils/redisConfig";
+import { red } from "chalk";
+import { post } from "@typegoose/typegoose";
+import { getPostsUtil } from "../utils/getPosts";
+import { json } from "body-parser";
 
 @ObjectType()
 export class PostResolver {
@@ -28,14 +33,26 @@ export class PostResolver {
     return post;
   }
   @Query(() => [Post])
-  async getAllPosts() {
+  async getAllPosts(@Ctx() { redis }: ctx) {
     const posts = await PostModel.find({}).populate(
       "author",
       "username _id email"
     );
-    console.log(posts);
-
+    if (!posts) {
+      return [];
+    }
     return posts;
+  }
+  @Query(() => Post)
+  async getPostById(@Arg("post_id", () => String) post_id: string) {
+    const post = await PostModel.findById(post_id).populate(
+      "author",
+      "username _id email"
+    );
+    if (!post) {
+      throw new Error("No post found");
+    }
+    return post;
   }
 
   @Mutation(() => Number)
@@ -119,17 +136,19 @@ export class PostResolver {
     return true;
   }
 
-  @Mutation(() => Post)
+  @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   @UseMiddleware(isAdmin)
   async updatePost(
-    @Arg("slug", () => String) slug: string,
+    @Arg("id", () => String) id: string,
     @Arg("title", { nullable: true }) title: string,
     @Arg("body", { nullable: true }) body: string,
+    @Arg("tag", { nullable: true }) tag: string,
     @Arg("subtitle", { nullable: true }) subtitle: string,
-    @Arg("description", { nullable: true }) description: string
+    @Arg("description", { nullable: true }) description: string,
+    @Arg("featureImage", { nullable: true }) featureImage: string
   ) {
-    const post = await PostModel.findOne({ slug }).populate(
+    const post = await PostModel.findById(id).populate(
       "author",
       "username _id, email"
     );
@@ -138,13 +157,18 @@ export class PostResolver {
     }
     if (post) {
       post.title = title || post.title;
+      post.tag = tag || post.tag;
       post.subtitle = subtitle || post.subtitle;
       post.slug = title ? slugify(title) : post.slug;
       post.body = body || post.body;
+      if (featureImage === "") {
+        post.featureImage = post.featureImage;
+      }
+      post.featureImage = featureImage || post.featureImage;
       post.description = description || post.description;
     }
-    const updatedPost = await post.save();
+    await post.save();
     console.log("updated!");
-    return updatedPost;
+    return true;
   }
 }

@@ -23,7 +23,12 @@ import { UploadResolver } from "./resolvers/uploadImageResolver";
   }
   app.use(graphqlUploadExpress());
   var corsOptions = {
-    origin: ["http://localhost:3000", "https://www.jasbirblog.tech/"],
+    origin: [
+      "http://localhost:3000",
+      "https://www.jasbirblog.tech/",
+      "https://www.jasbirblog.tech",
+      "https://jasbirblog.tech",
+    ],
     optionsSuccessStatus: 200, // For legacy browser support,
   };
   app.enable("trust proxy");

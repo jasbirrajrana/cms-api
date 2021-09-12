@@ -36,7 +36,12 @@ const uploadImageResolver_1 = require("./resolvers/uploadImageResolver");
     }
     app.use(graphql_upload_1.graphqlUploadExpress());
     var corsOptions = {
-        origin: ["http://localhost:3000", "https://www.jasbirblog.tech/"],
+        origin: [
+            "http://localhost:3000",
+            "https://www.jasbirblog.tech/",
+            "https://www.jasbirblog.tech",
+            "https://jasbirblog.tech",
+        ],
         optionsSuccessStatus: 200,
     };
     app.enable("trust proxy");
